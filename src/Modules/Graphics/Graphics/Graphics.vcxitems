@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{ce7f483c-8a61-4359-aa88-29a94fdfe0bf}</ItemsProjectGuid>
+    <ItemsRootNamespace>Graphics</ItemsRootNamespace>
+    <ItemsProjectName>Graphics</ItemsProjectName>
+    <CodeSharingProject>d5b15e24-ebce-4b9b-be9e-ea1646c07e81</CodeSharingProject>
+    <ItemsSccProjectName>SAK</ItemsSccProjectName>
+    <ItemsSccAuxPath>SAK</ItemsSccAuxPath>
+    <ItemsSccLocalPath>SAK</ItemsSccLocalPath>
+    <ItemsSccProvider>SAK</ItemsSccProvider>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRenderer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRendererLuaInternal.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)luaInc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderWindow.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderWindowLua.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\CmdData\Color.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\CmdData\Rect.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Cmd\ClearScreenCmd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Cmd\IRenderCmd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Cmd\IRenderCmdVisitor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Cmd\RenderRectCmd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Cmd\RenderCmdList.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Cmd\SetBrushColorCmd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Cmd\SetRectCmd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRendererLua.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\RenderCmdList.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\RenderResourceList.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\RenderResourceSlots.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Resource\ColorBrushResource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Render\Resource\RectResource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsRenderer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsRendererLua.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderWindow.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderWindowLua.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Render\Cmd\CmdImpl.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Render\Cmd\IRenderCmd.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Render\Cmd\RenderCmdList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+</Project>
