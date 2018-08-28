@@ -75,7 +75,7 @@ void HwndOutput::BeginRender() {
     auto rtView = this->GetD3DRtView();
     ID3D11RenderTargetView *const targets[1] = { this->GetD3DRtView() };
     //auto ctx = this->dxDev->GetContext();
-    auto dxLk = this->dxDev->LockCtxScoped();
+    //auto dxLk = this->dxDev->LockCtxScoped();
 
     this->dxDev->D3D()->OMSetRenderTargets(1, targets, nullptr);
     //this->dxDev->D3D()->ClearRenderTargetView(this->GetD3DRtView(), DirectX::Colors::Transparent);
@@ -89,7 +89,7 @@ void HwndOutput::EndRender() {
 
     {
         //auto ctx = this->dxDev->GetContext();
-        auto dxLk = this->dxDev->LockCtxScoped();
+        //auto dxLk = this->dxDev->LockCtxScoped();
 
         // Discard the contents of the render target.
         // This is a valid operation only when the existing contents will be entirely

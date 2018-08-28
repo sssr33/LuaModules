@@ -44,13 +44,13 @@ local renderer2 = window.Renderer
 print('got renderer2')
 print('renderer == renderer2 : ' .. tostring(renderer == renderer2))
 
-sleep(3)
-
-window.Renderer = nil
-
-sleep(3)
-
-window.Renderer = renderer
+--sleep(3)
+--
+--window.Renderer = nil
+--
+--sleep(3)
+--
+--window.Renderer = renderer
 
 --local renderer2 = window.Renderer23
 

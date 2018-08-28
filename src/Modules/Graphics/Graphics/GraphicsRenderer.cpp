@@ -9,12 +9,21 @@ DxDevice *GraphicsRenderer::GetDxDevice() {
 }
 
 void GraphicsRenderer::SetResourceSlots(const RenderResourceSlots &count) {
+    auto ctxLk = this->dxDev.LockCtxScoped();
+    this->SetResourceSlotsNoCtxLock(count);
+}
+
+void GraphicsRenderer::SetResourceSlotsNoCtxLock(const RenderResourceSlots &count) {
     this->brushes.resize(count.colorBrush);
     this->rects.resize(count.rect);
 }
 
 void GraphicsRenderer::Render(RenderCmdList &renderCmd) {
     auto ctxLk = this->dxDev.LockCtxScoped();
+    this->RenderNoCtxLock(renderCmd);
+}
+
+void GraphicsRenderer::RenderNoCtxLock(RenderCmdList &renderCmd) {
     auto d2d = this->dxDev.D2D();
 
     Renderer renderer;

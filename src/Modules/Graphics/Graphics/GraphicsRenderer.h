@@ -15,11 +15,13 @@ public:
     After resource has been set use <Render> to assign actual data to slots.
     */
     void SetResourceSlots(const RenderResourceSlots &count);
+    void SetResourceSlotsNoCtxLock(const RenderResourceSlots &count);
 
     /*
     Performs render commands.
     */
     void Render(RenderCmdList &renderCmd);
+    void RenderNoCtxLock(RenderCmdList &renderCmd);
 
 private:
     DxDevice dxDev;

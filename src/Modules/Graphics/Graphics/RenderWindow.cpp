@@ -330,9 +330,12 @@ void RenderWindow::RenderThreadMain() {
                 }
             }
 
-            output->BeginRender();
-            rendererLocal->Render(renderCmd);
-            output->EndRender();
+            {
+                auto dxLk = rendererLocal->GetDxDevice()->LockCtxScoped();
+                output->BeginRender();
+                rendererLocal->RenderNoCtxLock(renderCmd);
+                output->EndRender();
+            }
         }
     }
 }
