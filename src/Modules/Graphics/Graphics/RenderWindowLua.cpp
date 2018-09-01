@@ -11,12 +11,6 @@ static constexpr char *Graphics_RenderWindow_PropRenderer = "Renderer";
 
 int Graphics_RenderWindow_delete(lua_State *L) {
     auto _this = reinterpret_cast<RenderWindow*>(luaL_checkudata(L, 1, Graphics_RenderWindowMt));
-
-    // remove private instance table from private class table
-    lua_pushlightuserdata(L, _this);
-    lua_pushnil(L);
-    lua_rawset(L, lua_upvalueindex(1));
-
     _this->~RenderWindow();
     return 0;
 }
@@ -42,8 +36,7 @@ int Graphics_RenderWindow_new(lua_State *L) {
     luaL_getmetatable(L, Graphics_RenderWindowMt);
     lua_setmetatable(L, -2);
 
-    // set private instance table in private class table
-    lua_pushlightuserdata(L, mem);
+    // create private instance table
     lua_newtable(L);
 
     // fill private instance table
@@ -55,7 +48,8 @@ int Graphics_RenderWindow_new(lua_State *L) {
         lua_setfield(L, -2, Graphics_RenderWindow_PropRenderer);
     }
 
-    lua_rawset(L, lua_upvalueindex(1));
+    // set private instance table as uservalue of userdata
+    lua_setuservalue(L, -2);
 
     return 1;
 }
@@ -64,8 +58,7 @@ int Graphics_RenderWindow_PropGet(lua_State *L) {
     auto _this = reinterpret_cast<RenderWindow*>(luaL_checkudata(L, 1, Graphics_RenderWindowMt));
 
     // push private instance table
-    lua_pushlightuserdata(L, _this);
-    lua_rawget(L, lua_upvalueindex(1));
+    lua_getuservalue(L, 1);
 
     // do not check key just use what we've got
     // if private instance table doesn't have it nil will be on the stack
@@ -81,8 +74,7 @@ int Graphics_RenderWindow_PropSet(lua_State *L) {
     auto key = hash::fnv1<uint32_t>::hash(luaL_checkstring(L, 2));
 
     // push private instance table
-    lua_pushlightuserdata(L, _this);
-    lua_rawget(L, lua_upvalueindex(1));
+    lua_getuservalue(L, 1);
 
     // check key
     switch (key) {
@@ -121,20 +113,13 @@ void luaopen_Graphics_RenderWindow(lua_State *L) {
 
     luaL_checkversion(L);
 
-    // shared upvalue for private class registry
-    lua_newtable(L);
-
-    auto ptr = lua_topointer(L, -1);
-
     luaL_newlibtable(L, funcs);
-    lua_pushvalue(L, -2); // copy private class registry
-    luaL_setfuncs(L, funcs, 1);
+    luaL_setfuncs(L, funcs, 0);
 
-    luaL_newmetatable(L, Graphics_RenderWindowMt);
-    lua_pushvalue(L, -3); // copy private class registry
-    luaL_setfuncs(L, metaFuncs, 1);
+    if (luaL_newmetatable(L, Graphics_RenderWindowMt)) {
+        // set functions only when new table was created
+        luaL_setfuncs(L, metaFuncs, 0);
+    }
 
-    // pop metatable to leave only library table at the top of the stack
-    lua_pop(L, 1);
-    lua_replace(L, -2); // replace shared upvalue for private class registry with libtable that is on top of the stack and pop top
+    lua_pop(L, 1); // pop metatable to leave only library table at the top of the stack
 }
