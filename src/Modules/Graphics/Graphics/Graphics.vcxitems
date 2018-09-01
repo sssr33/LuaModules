@@ -21,7 +21,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRendererLuaInternal.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)luaInc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderWindow.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderWindowLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Render\CmdData\Color.h" />

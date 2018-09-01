@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include "luaInc.h"
+
+#include <LuaHelpers/luaInc.h>
 
 #ifdef __cplusplus
 extern "C" {

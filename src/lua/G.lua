@@ -35,7 +35,7 @@ printTable(graphics)
 
 do
 print('starting window create')
-local window = graphics.RenderWindow.New('My Window', 12)
+local window = graphics.RenderWindow.New('My Window')
 print('window has been created')
 
 local renderer = window.Renderer

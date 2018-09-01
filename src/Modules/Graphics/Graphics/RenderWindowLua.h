@@ -1,4 +1,5 @@
 #pragma once
-#include "luaInc.h"
+
+#include <LuaHelpers/luaInc.h>
 
 void luaopen_Graphics_RenderWindow(lua_State *L);

@@ -27,14 +27,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Modules\Graphic
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics.dl.Desktop", "Modules\Graphics\Graphics.dl.Desktop\Graphics.dl.Desktop.vcxproj", "{5F758FDD-5E50-4D70-ADEE-A6EFB663CE38}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LuaHelpers", "LuaHelpers", "{C7A5529F-90F8-439E-ADC5-F1FA56242041}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaHelpers", "Modules\LuaHelpers\LuaHelpers\LuaHelpers.vcxitems", "{2481C6A9-BEC9-4AAA-B9D1-7480CEE35FD1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaHelpers.sl.Desktop", "Modules\LuaHelpers\LuaHelpers.sl.Desktop\LuaHelpers.sl.Desktop.vcxproj", "{E803EAAA-CE04-446F-85B5-8B29A5F1A338}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		lua53\lua53\lua53.vcxitems*{12880b67-6a9c-42b4-89ce-94a8f38e16f0}*SharedItemsImports = 4
+		Modules\LuaHelpers\LuaHelpers\LuaHelpers.vcxitems*{2481c6a9-bec9-4aaa-b9d1-7480cee35fd1}*SharedItemsImports = 9
 		Modules\Graphics\Graphics\Graphics.vcxitems*{5f758fdd-5e50-4d70-adee-a6efb663ce38}*SharedItemsImports = 4
 		lua53\lua53\lua53.vcxitems*{9bfb0134-b94a-4d85-b11f-5e9dc4f902c1}*SharedItemsImports = 9
 		Modules\Helpers\Helpers\Helpers.vcxitems*{b469daca-1ad8-448a-b5c0-ae929f05c08e}*SharedItemsImports = 4
 		Modules\Graphics\Graphics\Graphics.vcxitems*{ce7f483c-8a61-4359-aa88-29a94fdfe0bf}*SharedItemsImports = 9
 		Modules\Helpers\Helpers\Helpers.vcxitems*{dfe61d1b-7bca-41cb-aa59-c2e000051d8e}*SharedItemsImports = 9
+		Modules\LuaHelpers\LuaHelpers\LuaHelpers.vcxitems*{e803eaaa-ce04-446f-85b5-8b29a5f1a338}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -95,6 +103,16 @@ Global
 		{5F758FDD-5E50-4D70-ADEE-A6EFB663CE38}.Release|x64.Build.0 = Release|x64
 		{5F758FDD-5E50-4D70-ADEE-A6EFB663CE38}.Release|x86.ActiveCfg = Release|Win32
 		{5F758FDD-5E50-4D70-ADEE-A6EFB663CE38}.Release|x86.Build.0 = Release|Win32
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Debug|ARM.ActiveCfg = Debug|Win32
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Debug|x64.ActiveCfg = Debug|x64
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Debug|x64.Build.0 = Debug|x64
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Debug|x86.ActiveCfg = Debug|Win32
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Debug|x86.Build.0 = Debug|Win32
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Release|ARM.ActiveCfg = Release|Win32
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Release|x64.ActiveCfg = Release|x64
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Release|x64.Build.0 = Release|x64
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Release|x86.ActiveCfg = Release|Win32
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +126,9 @@ Global
 		{B469DACA-1AD8-448A-B5C0-AE929F05C08E} = {21172F0C-899E-4FE8-B2AE-EE9499DDBC30}
 		{CE7F483C-8A61-4359-AA88-29A94FDFE0BF} = {B80879B5-E228-4208-B969-0C52B7EC715A}
 		{5F758FDD-5E50-4D70-ADEE-A6EFB663CE38} = {B80879B5-E228-4208-B969-0C52B7EC715A}
+		{C7A5529F-90F8-439E-ADC5-F1FA56242041} = {6D9F1F92-CC40-454F-900C-4C443F6F1EE6}
+		{2481C6A9-BEC9-4AAA-B9D1-7480CEE35FD1} = {C7A5529F-90F8-439E-ADC5-F1FA56242041}
+		{E803EAAA-CE04-446F-85B5-8B29A5F1A338} = {C7A5529F-90F8-439E-ADC5-F1FA56242041}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {382640BF-1ED6-44F4-A8FB-B3187B79E6BA}
