@@ -19,6 +19,7 @@ namespace LuaH {
         private:
             void PrintTypeHelper(lua_State *L, int index, uint32_t depth, const std::string &indent, const std::string &indentInc);
             void PrintPtr(lua_State *L, int index, const char *fmt);
+            void PrintUserData(lua_State *L, int index);
             void PrintTable(lua_State *L, int index, uint32_t depth, const std::string &indent, const std::string &indentInc);
         };
     };

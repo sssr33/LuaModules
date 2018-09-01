@@ -19,10 +19,7 @@ namespace LuaH {
     }
 
     void StackPrinter::PrintState::PrintType(lua_State *L, int index, uint32_t depth) {
-        if (index < 0) {
-            // make index positive to have constant position
-            index = lua_gettop(L) + 1 + index;
-        }
+        index = lua_absindex(L, index);
 
         this->PrintTypeHelper(L, index, depth, "", "    ");
     }
@@ -62,7 +59,7 @@ namespace LuaH {
             this->PrintPtr(L, index, "%#016x(FUNCTION)");
             break;
         case LUA_TUSERDATA:
-            this->PrintPtr(L, index, "%#016x(USERDATA)");
+            this->PrintUserData(L, index);
             break;
         case LUA_TTHREAD:
             this->PrintPtr(L, index, "%#016x(THREAD)");
@@ -80,6 +77,55 @@ namespace LuaH {
         this->res += this->buf.data();
     }
 
+    void StackPrinter::PrintState::PrintUserData(lua_State *L, int index) {
+        assert(index > 0);
+
+        lua_getmetatable(L, index);
+
+        std::string name;
+
+        if (lua_istable(L, -1)) {
+            // got metatable
+            // search registry for userdata metatable
+
+            int mtIdx = lua_gettop(L);
+
+            lua_pushnil(L);  // first key
+
+            while (lua_next(L, LUA_REGISTRYINDEX) != 0) {
+                const int keyIdx = -2;
+                const int valIdx = -1;
+
+                bool found = lua_rawequal(L, -1, mtIdx) != 0;
+
+                // removes 'value'; keeps 'key' for next iteration
+                lua_pop(L, 1);
+
+                if (found) {
+                    // use another PrintState to print any key type
+                    PrintState tmpState;
+
+                    tmpState.PrintType(L, -1, 0);
+                    name = std::move(tmpState.res);
+
+                    lua_pop(L, 1); // pop key
+                    break;
+                }
+            }
+        }
+
+        lua_pop(L, 1); // pop metatable
+
+        if (!name.empty()) {
+            this->PrintPtr(L, index, "%#016x(USERDATA:");
+            this->res += name;
+            this->res += ")";
+        }
+        else {
+            this->PrintPtr(L, index, "%#016x(USERDATA)");
+        }
+    }
+
     void StackPrinter::PrintState::PrintTable(lua_State *L, int index, uint32_t depth, const std::string &indent, const std::string &indentInc) {
         assert(index > 0);
 
@@ -90,8 +136,10 @@ namespace LuaH {
         lua_pushnil(L);  // first key
 
         while (lua_next(L, index) != 0) {
-            const int keyIdx = index + 1; // or -2;
-            const int valIdx = index + 2; // or -1;
+            // PrintTypeHelper expects positive indexes
+            // Get absolute indexes from current top
+            const int keyIdx = lua_absindex(L, -2);
+            const int valIdx = lua_absindex(L, -1);
 
             if (first) {
                 // table has some entries, add ':\n' in front of '(TABLE)'
@@ -108,7 +156,7 @@ namespace LuaH {
             this->PrintTypeHelper(L, valIdx, depth, indent, indentInc);
             first = false;
 
-            /* removes 'value'; keeps 'key' for next iteration */
+            // removes 'value'; keeps 'key' for next iteration
             lua_pop(L, 1);
         }
     }

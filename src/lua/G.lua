@@ -44,6 +44,9 @@ local renderer2 = window.Renderer
 print('got renderer2')
 print('renderer == renderer2 : ' .. tostring(renderer == renderer2))
 
+local renderer23 = window.UnknownKey
+print('UnknownKey is ' .. tostring(renderer23))
+
 --sleep(3)
 --
 --window.Renderer = nil

@@ -62,23 +62,14 @@ int Graphics_RenderWindow_new(lua_State *L) {
 
 int Graphics_RenderWindow_PropGet(lua_State *L) {
     auto _this = reinterpret_cast<RenderWindow*>(luaL_checkudata(L, 1, Graphics_RenderWindowMt));
-    auto key = hash::fnv1<uint32_t>::hash(luaL_checkstring(L, 2));
 
     // push private instance table
     lua_pushlightuserdata(L, _this);
     lua_rawget(L, lua_upvalueindex(1));
 
-    // check key
-    switch (key) {
-    case hash::fnv1<uint32_t>::hash(Graphics_RenderWindow_PropRenderer): {
-        lua_pushstring(L, lua_tostring(L, 2));
-        break;
-    }
-    default:
-        luaL_error(L, "Can't access Graphics.RenderWindow.%s", lua_tostring(L, 2));
-        break;
-    }
-
+    // do not check key just use what we've got
+    // if private instance table doesn't have it nil will be on the stack
+    lua_pushvalue(L, 2); // push key
     lua_rawget(L, -2); // push key value
     lua_replace(L, -2); // replace private instance table with value
 
