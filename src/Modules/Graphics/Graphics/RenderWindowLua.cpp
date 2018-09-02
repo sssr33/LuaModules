@@ -5,6 +5,7 @@
 
 #include <libhelpers/UtfConvert.h>
 #include <libhelpers/fnv1.h>
+#include <LuaHelpers/InstanceTable.h>
 
 static constexpr char *Graphics_RenderWindowMt = "Graphics.RenderWindow";
 static constexpr char *Graphics_RenderWindow_PropRenderer = "Renderer";
@@ -36,20 +37,13 @@ int Graphics_RenderWindow_new(lua_State *L) {
     luaL_getmetatable(L, Graphics_RenderWindowMt);
     lua_setmetatable(L, -2);
 
-    // create private instance table
-    lua_newtable(L);
-
-    // fill private instance table
-    {
+    LuaH::InstanceTable::Init(L, [&] {
         auto obj = reinterpret_cast<RenderWindow*>(mem);
 
         auto renderer = obj->GetRenderer();
         Graphics_GraphicsRenderer_Internal_new(L, std::move(renderer));
         lua_setfield(L, -2, Graphics_RenderWindow_PropRenderer);
-    }
-
-    // set private instance table as uservalue of userdata
-    lua_setuservalue(L, -2);
+    });
 
     return 1;
 }
@@ -57,14 +51,7 @@ int Graphics_RenderWindow_new(lua_State *L) {
 int Graphics_RenderWindow_PropGet(lua_State *L) {
     auto _this = reinterpret_cast<RenderWindow*>(luaL_checkudata(L, 1, Graphics_RenderWindowMt));
 
-    // push private instance table
-    lua_getuservalue(L, 1);
-
-    // do not check key just use what we've got
-    // if private instance table doesn't have it nil will be on the stack
-    lua_pushvalue(L, 2); // push key
-    lua_rawget(L, -2); // push key value
-    lua_replace(L, -2); // replace private instance table with value
+    LuaH::InstanceTable::PropGet(L);
 
     return 1;
 }
@@ -72,9 +59,6 @@ int Graphics_RenderWindow_PropGet(lua_State *L) {
 int Graphics_RenderWindow_PropSet(lua_State *L) {
     auto _this = reinterpret_cast<RenderWindow*>(luaL_checkudata(L, 1, Graphics_RenderWindowMt));
     auto key = hash::fnv1<uint32_t>::hash(luaL_checkstring(L, 2));
-
-    // push private instance table
-    lua_getuservalue(L, 1);
 
     // check key
     switch (key) {
@@ -93,7 +77,7 @@ int Graphics_RenderWindow_PropSet(lua_State *L) {
         break;
     }
 
-    lua_pop(L, 1); // pop private instance table
+    LuaH::InstanceTable::PropSet(L);
 
     return 0;
 }

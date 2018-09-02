@@ -3,8 +3,10 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)StackPrinter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)luaInc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)InstanceTable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)StackPrinter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)InstanceTable.cpp" />
   </ItemGroup>
 </Project>

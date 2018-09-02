@@ -47,15 +47,21 @@ print('renderer == renderer2 : ' .. tostring(renderer == renderer2))
 local renderer23 = window.UnknownKey
 print('UnknownKey is ' .. tostring(renderer23))
 
---sleep(3)
---
---window.Renderer = nil
---
---sleep(3)
---
---window.Renderer = renderer
+sleep(2)
 
---local renderer2 = window.Renderer23
+window.Renderer = nil
+
+if window.Renderer == nil then
+    print('window.Renderer == nil')
+else
+    print('window.Renderer is not nil')
+end
+
+sleep(2)
+
+window.Renderer = renderer
+
+local renderer2 = window.Renderer23
 
 end
 

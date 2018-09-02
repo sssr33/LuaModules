@@ -18,10 +18,12 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)InstanceTable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)luaInc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StackPrinter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)InstanceTable.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StackPrinter.cpp" />
   </ItemGroup>
   <ItemGroup>
