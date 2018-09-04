@@ -80,41 +80,54 @@ namespace LuaH {
     void StackPrinter::PrintState::PrintUserData(lua_State *L, int index) {
         assert(index > 0);
 
-        lua_getmetatable(L, index);
-
         std::string name;
+        int type = luaL_getmetafield(L, index, "__name"); // faster way to get userdata type name
 
-        if (lua_istable(L, -1)) {
-            // got metatable
-            // search registry for userdata metatable
+        if (type != LUA_TNIL) {
+            // use another PrintState to print any key type
+            PrintState tmpState;
 
-            int mtIdx = lua_gettop(L);
+            tmpState.PrintType(L, -1, 0);
+            name = std::move(tmpState.res);
+        }
+        else {
+            // look up key in the registry. Slower way but should work just in case.
+            // no need to pop <luaL_getmetafield> result because it pushed nothing when type == LUA_TNIL
 
-            lua_pushnil(L);  // first key
+            lua_getmetatable(L, index);
 
-            while (lua_next(L, LUA_REGISTRYINDEX) != 0) {
-                const int keyIdx = -2;
-                const int valIdx = -1;
+            if (lua_istable(L, -1)) {
+                // got metatable
+                // search registry for userdata metatable
 
-                bool found = lua_rawequal(L, -1, mtIdx) != 0;
+                int mtIdx = lua_gettop(L);
 
-                // removes 'value'; keeps 'key' for next iteration
-                lua_pop(L, 1);
+                lua_pushnil(L);  // first key
 
-                if (found) {
-                    // use another PrintState to print any key type
-                    PrintState tmpState;
+                while (lua_next(L, LUA_REGISTRYINDEX) != 0) {
+                    const int keyIdx = -2;
+                    const int valIdx = -1;
 
-                    tmpState.PrintType(L, -1, 0);
-                    name = std::move(tmpState.res);
+                    bool found = lua_rawequal(L, -1, mtIdx) != 0;
 
-                    lua_pop(L, 1); // pop key
-                    break;
+                    // removes 'value'; keeps 'key' for next iteration
+                    lua_pop(L, 1);
+
+                    if (found) {
+                        // use another PrintState to print any key type
+                        PrintState tmpState;
+
+                        tmpState.PrintType(L, -1, 0);
+                        name = std::move(tmpState.res);
+
+                        lua_pop(L, 1); // pop key
+                        break;
+                    }
                 }
             }
         }
 
-        lua_pop(L, 1); // pop metatable
+        lua_pop(L, 1); // pop key(if type != LUA_TNIL) or metatable(else)
 
         if (!name.empty()) {
             this->PrintPtr(L, index, "%#016x(USERDATA:");

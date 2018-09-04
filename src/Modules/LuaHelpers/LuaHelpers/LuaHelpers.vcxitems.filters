@@ -4,9 +4,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StackPrinter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)luaInc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InstanceTable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Class.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)StackPrinter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InstanceTable.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Class.cpp" />
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@
 #include <libhelpers/UtfConvert.h>
 #include <libhelpers/fnv1.h>
 #include <LuaHelpers/InstanceTable.h>
+#include <LuaHelpers/Class.h>
 
 static constexpr char *Graphics_RenderWindowMt = "Graphics.RenderWindow";
 static constexpr char *Graphics_RenderWindow_PropRenderer = "Renderer";
@@ -95,15 +96,5 @@ void luaopen_Graphics_RenderWindow(lua_State *L) {
         { nullptr, nullptr }
     };
 
-    luaL_checkversion(L);
-
-    luaL_newlibtable(L, funcs);
-    luaL_setfuncs(L, funcs, 0);
-
-    if (luaL_newmetatable(L, Graphics_RenderWindowMt)) {
-        // set functions only when new table was created
-        luaL_setfuncs(L, metaFuncs, 0);
-    }
-
-    lua_pop(L, 1); // pop metatable to leave only library table at the top of the stack
+    LuaH::Class::Register(L, funcs, metaFuncs, Graphics_RenderWindowMt);
 }

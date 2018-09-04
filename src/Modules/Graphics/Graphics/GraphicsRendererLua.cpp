@@ -4,6 +4,7 @@
 #include "GraphicsRenderer.h"
 
 #include <memory>
+#include <LuaHelpers/Class.h>
 
 static constexpr char *Graphics_GraphicsRendererMt = "Graphics.GraphicsRenderer";
 
@@ -75,23 +76,11 @@ void luaopen_Graphics_GraphicsRenderer(lua_State *L) {
         { "New", Graphics_GraphicsRenderer_new },
         { nullptr, nullptr }
     };
-    /*static const luaL_Reg metaFuncs[] = {
-        { "New", Graphics_RenderWindow_new },
+
+    static const luaL_Reg metaFuncs[] = {
+        { "__gc", Graphics_GraphicsRenderer_delete },
         { nullptr, nullptr }
-    };*/
+    };
 
-    luaL_newlib(L, funcs);
-
-    luaL_newmetatable(L, Graphics_GraphicsRendererMt);
-
-    // set metatable as __index of itself
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
-
-    // set __gc method for metatable
-    lua_pushcfunction(L, Graphics_GraphicsRenderer_delete);
-    lua_setfield(L, -2, "__gc");
-
-    // pop metatable to leave only library table at the top of the stack
-    lua_pop(L, 1);
+    LuaH::Class::Register(L, funcs, metaFuncs, Graphics_GraphicsRendererMt);
 }
