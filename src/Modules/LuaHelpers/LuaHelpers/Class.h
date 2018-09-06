@@ -19,7 +19,7 @@ namespace LuaH {
             luaL_setfuncs(L, classFn, 0);
 
             if (luaL_newmetatable(L, classMtName)) {
-                // set functions only when new table was created
+                // set functions only when new table was created and not when existing was returned
                 luaL_setfuncs(L, classMtFn, 0);
             }
 

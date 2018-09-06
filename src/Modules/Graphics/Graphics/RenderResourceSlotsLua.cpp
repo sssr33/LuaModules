@@ -4,44 +4,100 @@
 
 #include <memory>
 #include <string>
+#include <libhelpers/fnv1.h>
 #include <LuaHelpers/Class.h>
+#include <LuaHelpers/Error.h>
 
-static constexpr char *Graphics_RenderResourceSlotsMt = "Graphics.RenderResourceSlots";
+namespace Lua {
+    struct RenderResourceSlotsLua {
+        typedef RenderResourceSlots CType;
+        static constexpr char *NameMt = "Graphics.RenderResourceSlots";
 
-int Graphics_RenderResourceSlots_delete(lua_State *L) {
-    auto _this = reinterpret_cast<RenderResourceSlots*>(luaL_checkudata(L, 1, Graphics_RenderResourceSlotsMt));
-    _this->~RenderResourceSlots();
-    return 0;
-}
+        struct Prop {
+            static constexpr char *Rect = "Rect";
+            static constexpr char *ColorBrush = "ColorBrush";
+        };
 
-int Graphics_RenderResourceSlots_new(lua_State *L) {
-    auto mem = lua_newuserdata(L, sizeof RenderResourceSlots);
+        static int Create(lua_State *L) {
+            auto mem = lua_newuserdata(L, sizeof CType);
 
-    try {
-        new(mem) RenderResourceSlots();
-    }
-    catch (const std::exception &e) {
-        std::string msg = "Failed to create RenderResourceSlots instance: ";
-        msg += e.what();
-        luaL_error(L, msg.c_str());
-    }
+            try {
+                new(mem) CType();
+            }
+            catch (const std::exception &e) {
+                LuaH::Error::FailedToCreate(L, NameMt, e);
+            }
 
-    luaL_getmetatable(L, Graphics_RenderResourceSlotsMt);
-    lua_setmetatable(L, -2);
+            luaL_getmetatable(L, NameMt);
+            lua_setmetatable(L, -2);
 
-    return 1;
-}
+            return 1;
+        }
 
-void luaopen_Graphics_RenderResourceSlots(lua_State *L) {
-    static const luaL_Reg funcs[] = {
-        { "New", Graphics_RenderResourceSlots_new },
-        { nullptr, nullptr }
+        static int Destroy(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            _this->~CType();
+            return 0;
+        }
+
+        static int PropGet(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto key = hash::fnv1<uint32_t>::hash(luaL_checkstring(L, 2));
+
+            switch (key) {
+            case hash::fnv1<uint32_t>::hash(Prop::Rect): {
+                lua_pushinteger(L, _this->rect);
+                break;
+            }
+            case hash::fnv1<uint32_t>::hash(Prop::ColorBrush): {
+                lua_pushinteger(L, _this->colorBrush);
+                break;
+            }
+            default:
+                lua_pushnil(L);
+                break;
+            }
+
+            return 1;
+        }
+
+        static int PropSet(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto key = hash::fnv1<uint32_t>::hash(luaL_checkstring(L, 2));
+
+            switch (key) {
+            case hash::fnv1<uint32_t>::hash(Prop::Rect): {
+                auto val = luaL_checkinteger(L, 3);
+                _this->rect = (size_t)val;
+                break;
+            }
+            case hash::fnv1<uint32_t>::hash(Prop::ColorBrush): {
+                auto val = luaL_checkinteger(L, 3);
+                _this->colorBrush = (size_t)val;
+                break;
+            }
+            default:
+                LuaH::Error::FailedPropertySetter(L, NameMt);
+                break;
+            }
+
+            return 0;
+        }
     };
 
-    static const luaL_Reg metaFuncs[] = {
-        { "__gc", Graphics_RenderResourceSlots_delete },
-        { nullptr, nullptr }
-    };
+    void LuaOpenRenderResourceSlots(lua_State *L) {
+        static const luaL_Reg funcs[] = {
+            { "New", RenderResourceSlotsLua::Create },
+            { nullptr, nullptr }
+        };
 
-    LuaH::Class::Register(L, funcs, metaFuncs, Graphics_RenderResourceSlotsMt);
+        static const luaL_Reg metaFuncs[] = {
+            { "__index", RenderResourceSlotsLua::PropGet },
+            { "__newindex", RenderResourceSlotsLua::PropSet },
+            { "__gc", RenderResourceSlotsLua::Destroy },
+            { nullptr, nullptr }
+        };
+
+        LuaH::Class::Register(L, funcs, metaFuncs, RenderResourceSlotsLua::NameMt);
+    }
 }

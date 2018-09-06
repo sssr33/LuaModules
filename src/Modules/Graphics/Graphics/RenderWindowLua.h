@@ -2,4 +2,6 @@
 
 #include <LuaHelpers/luaInc.h>
 
-void luaopen_Graphics_RenderWindow(lua_State *L);
+namespace Lua {
+    void LuaOpenRenderWindow(lua_State *L);
+}

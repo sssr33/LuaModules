@@ -10,16 +10,16 @@ int luaopen_Graphics(lua_State *L) {
 
     lua_createtable(L, 0, 0);
 
-    luaopen_Graphics_RenderWindow(L);
+    Lua::LuaOpenRenderWindow(L);
     lua_setfield(L, -2, "RenderWindow");
 
-    luaopen_Graphics_GraphicsRenderer(L);
+    Lua::LuaOpenGraphicsRenderer(L);
     lua_setfield(L, -2, "GraphicsRenderer");
 
-    luaopen_Graphics_RenderCmdList(L);
+    Lua::LuaOpenRenderCmdList(L);
     lua_setfield(L, -2, "RenderCmdList");
 
-    luaopen_Graphics_RenderResourceSlots(L);
+    Lua::LuaOpenRenderResourceSlots(L);
     lua_setfield(L, -2, "RenderResourceSlots");
 
     return 1;

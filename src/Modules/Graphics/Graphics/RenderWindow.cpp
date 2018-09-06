@@ -177,7 +177,7 @@ void RenderWindow::RenderThreadMain() {
 
             if (rendererLocal) {
                 resize = this->renderThreadResize || resetOutput;
-                render = this->renderThreadRenderFrame;
+                render = this->renderThreadRenderFrame || resetOutput;
                 renderSize = this->renderSize;
             }
 

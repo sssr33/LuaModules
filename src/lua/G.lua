@@ -14,6 +14,14 @@ function printTable(tab, indent)
 
         if type(v) == 'table' then
             printTable(v, indent .. '  ')
+
+            local mt = getmetatable(v)
+
+            print(indent .. '  ' .. tostring(mt))
+
+            if mt ~= nil then
+                printTable(v, indent .. '  ')
+            end
         end
     end
 end
@@ -36,6 +44,20 @@ printTable(graphics)
 do
     local renderList = graphics.RenderCmdList.New()
     local renderResourceSlots = graphics.RenderResourceSlots.New()
+
+    local mt1 = getmetatable(renderResourceSlots)
+
+    print('\nrenderResourceSlots MT:')
+    printTable(mt1)
+    print('\n')
+
+    local rects = renderResourceSlots.Rect
+    renderResourceSlots.ColorBrush = 12
+
+    local rect2 = renderResourceSlots.Rect
+    renderResourceSlots.Rect = 22
+
+    --renderResourceSlots.asdasd = 'asd'
 end
 
 collectgarbage('collect')

@@ -2,4 +2,6 @@
 
 #include <LuaHelpers/luaInc.h>
 
-void luaopen_Graphics_RenderCmdList(lua_State *L);
+namespace Lua {
+    void LuaOpenRenderCmdList(lua_State *L);
+}

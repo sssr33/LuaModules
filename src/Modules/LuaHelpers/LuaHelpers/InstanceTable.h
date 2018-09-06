@@ -10,6 +10,9 @@ namespace LuaH {
     public:
         // Creates table(stack -1), calls <initFn> and sets it to userData at <userDataIdx>
         // <initFn> must NOT leave anything on the stack!
+        // <initFn> used to initialize initial values of properties. This is intended for object properties so the object will not need to be copied on each Get.
+        // If lua class needs only value properties(numbers, strings and other primitive types) then it doesn't need to init instance table.
+        // Thi table will be destroyed automatically by lua runtime with userdata.
         template<class Fn> static void Init(lua_State *L, Fn initFn, int userDataIdx = -2) {
             // create private instance table
             lua_newtable(L);
