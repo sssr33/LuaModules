@@ -34,34 +34,41 @@ printTable(graphics)
 --end
 
 do
-print('starting window create')
-local window = graphics.RenderWindow.New('My Window')
-print('window has been created')
-
-local renderer = window.Renderer
-print('got renderer')
-local renderer2 = window.Renderer
-print('got renderer2')
-print('renderer == renderer2 : ' .. tostring(renderer == renderer2))
-
-local renderer23 = window.UnknownKey
-print('UnknownKey is ' .. tostring(renderer23))
-
-sleep(2)
-
-window.Renderer = nil
-
-if window.Renderer == nil then
-    print('window.Renderer == nil')
-else
-    print('window.Renderer is not nil')
+    local renderList = graphics.RenderCmdList.New()
+    local renderResourceSlots = graphics.RenderResourceSlots.New()
 end
 
-sleep(2)
+collectgarbage('collect')
 
-window.Renderer = renderer
-
-local renderer2 = window.Renderer23
+do
+    print('starting window create')
+    local window = graphics.RenderWindow.New('My Window')
+    print('window has been created')
+    
+    local renderer = window.Renderer
+    print('got renderer')
+    local renderer2 = window.Renderer
+    print('got renderer2')
+    print('renderer == renderer2 : ' .. tostring(renderer == renderer2))
+    
+    local renderer23 = window.UnknownKey
+    print('UnknownKey is ' .. tostring(renderer23))
+    
+    sleep(2)
+    
+    window.Renderer = nil
+    
+    if window.Renderer == nil then
+        print('window.Renderer == nil')
+    else
+        print('window.Renderer is not nil')
+    end
+    
+    sleep(2)
+    
+    window.Renderer = renderer
+    
+    local renderer2 = window.Renderer23
 
 end
 

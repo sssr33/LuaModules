@@ -21,6 +21,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRendererLuaInternal.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderCmdListLua.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderResourceSlotsLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderWindow.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderWindowLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Render\CmdData\Color.h" />
@@ -49,6 +51,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderCmdListLua.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderResourceSlotsLua.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RenderWindow.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RenderWindowLua.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Render\Cmd\CmdImpl.cpp" />

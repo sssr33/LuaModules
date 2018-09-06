@@ -2,6 +2,8 @@
 #include "Graphics.h"
 #include "RenderWindowLua.h"
 #include "GraphicsRendererLua.h"
+#include "RenderCmdListLua.h"
+#include "RenderResourceSlotsLua.h"
 
 int luaopen_Graphics(lua_State *L) {
     luaL_checkversion(L);
@@ -13,6 +15,12 @@ int luaopen_Graphics(lua_State *L) {
 
     luaopen_Graphics_GraphicsRenderer(L);
     lua_setfield(L, -2, "GraphicsRenderer");
+
+    luaopen_Graphics_RenderCmdList(L);
+    lua_setfield(L, -2, "RenderCmdList");
+
+    luaopen_Graphics_RenderResourceSlots(L);
+    lua_setfield(L, -2, "RenderResourceSlots");
 
     return 1;
 }

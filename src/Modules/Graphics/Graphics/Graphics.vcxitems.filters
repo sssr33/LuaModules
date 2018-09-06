@@ -23,6 +23,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Render\RenderResourceSlots.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRendererLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRendererLuaInternal.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderCmdListLua.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderResourceSlotsLua.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
@@ -37,5 +39,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Render\Cmd\CmdImpl.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Render\Cmd\RenderCmdList.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsRendererLua.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderCmdListLua.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderResourceSlotsLua.cpp" />
   </ItemGroup>
 </Project>
