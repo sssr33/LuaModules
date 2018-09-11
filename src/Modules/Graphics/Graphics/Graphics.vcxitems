@@ -18,6 +18,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DataReaderLua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsRendererLuaInternal.h" />
@@ -44,6 +45,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DataReaderLua.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Graphics.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsRenderer.cpp" />

@@ -6,11 +6,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InstanceTable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Class.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Error.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DataReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)StackPrinter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InstanceTable.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Class.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Error.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DataReader.cpp" />
   </ItemGroup>
 </Project>

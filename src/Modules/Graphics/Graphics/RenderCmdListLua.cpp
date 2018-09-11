@@ -32,6 +32,26 @@ namespace Lua {
             _this->~CType();
             return 0;
         }
+
+        static int ClearScreen(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            return 0;
+        }
+
+        static int RenderRect(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            return 0;
+        }
+
+        static int SetBrushColor(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            return 0;
+        }
+
+        static int SetRect(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            return 0;
+        }
     };
 
     void LuaOpenRenderCmdList(lua_State *L) {
@@ -42,6 +62,10 @@ namespace Lua {
 
         static const luaL_Reg metaFuncs[] = {
             { "__gc", RenderCmdListLua::Destroy },
+            { "ClearScreen", RenderCmdListLua::ClearScreen },
+            { "RenderRect", RenderCmdListLua::RenderRect },
+            { "SetBrushColor", RenderCmdListLua::SetBrushColor },
+            { "SetRect", RenderCmdListLua::SetRect },
             { nullptr, nullptr }
         };
 
