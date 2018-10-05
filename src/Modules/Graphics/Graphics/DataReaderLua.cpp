@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "DataReaderLua.h"
 
 #include <LuaHelpers/DataReader.h>
@@ -22,7 +23,7 @@ namespace Lua {
             break;
         }
         case LUA_TTABLE: {
-            int len = luaL_len(L, idx);
+            lua_Integer len = luaL_len(L, idx);
 
             if (len >= 3) {
                 color.r = LuaH::DataReader::GetArrayNumber(L, idx, 1, ErrorRed);
@@ -65,7 +66,7 @@ namespace Lua {
             break;
         }
         case LUA_TTABLE: {
-            int len = luaL_len(L, idx);
+            lua_Integer len = luaL_len(L, idx);
 
             if (len >= 4) {
                 rect.left = LuaH::DataReader::GetArrayNumber(L, idx, 1, ErrorLeft);
@@ -85,5 +86,7 @@ namespace Lua {
             luaL_error(L, "Unexpected type when parsing Rect. Got %s.", lua_typename(L, type));
             break;
         }
+
+        return rect;
     }
 }
