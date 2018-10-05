@@ -8,6 +8,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+# Allow vcxproj.user files to share command line arguments for debugging
+!*.vcxproj.user
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
