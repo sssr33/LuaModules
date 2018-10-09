@@ -16,26 +16,26 @@ namespace Lua {
 
         switch (type) {
         case LUA_TNUMBER: {
-            color.r = LuaH::DataReader::GetStackNumber(L, idx, ErrorRed);
-            color.g = LuaH::DataReader::GetStackNumber(L, idx + 1, ErrorGreen);
-            color.b = LuaH::DataReader::GetStackNumber(L, idx + 2, ErrorBlue);
-            color.a = LuaH::DataReader::GetStackNumber(L, idx + 3, ErrorAlpha, 1.f);
+            color.r = LuaH::DataReader::GetStack<float>(L, idx, ErrorRed);
+            color.g = LuaH::DataReader::GetStack<float>(L, idx + 1, ErrorGreen);
+            color.b = LuaH::DataReader::GetStack<float>(L, idx + 2, ErrorBlue);
+            color.a = LuaH::DataReader::GetStack<float>(L, idx + 3, ErrorAlpha, 1.f);
             break;
         }
         case LUA_TTABLE: {
             lua_Integer len = luaL_len(L, idx);
 
             if (len >= 3) {
-                color.r = LuaH::DataReader::GetArrayNumber(L, idx, 1, ErrorRed);
-                color.g = LuaH::DataReader::GetArrayNumber(L, idx, 2, ErrorGreen);
-                color.b = LuaH::DataReader::GetArrayNumber(L, idx, 3, ErrorBlue);
-                color.a = LuaH::DataReader::GetArrayNumber(L, idx, 4, ErrorAlpha, 1.f);
+                color.r = LuaH::DataReader::GetArray<float>(L, idx, 1, ErrorRed);
+                color.g = LuaH::DataReader::GetArray<float>(L, idx, 2, ErrorGreen);
+                color.b = LuaH::DataReader::GetArray<float>(L, idx, 3, ErrorBlue);
+                color.a = LuaH::DataReader::GetArray<float>(L, idx, 4, ErrorAlpha, 1.f);
             }
             else {
-                color.r = LuaH::DataReader::GetTableNumber(L, idx, "r", ErrorRed);
-                color.g = LuaH::DataReader::GetTableNumber(L, idx, "g", ErrorGreen);
-                color.b = LuaH::DataReader::GetTableNumber(L, idx, "b", ErrorBlue);
-                color.a = LuaH::DataReader::GetTableNumber(L, idx, "a", ErrorAlpha, 1.f);
+                color.r = LuaH::DataReader::GetTable<float>(L, idx, "r", ErrorRed);
+                color.g = LuaH::DataReader::GetTable<float>(L, idx, "g", ErrorGreen);
+                color.b = LuaH::DataReader::GetTable<float>(L, idx, "b", ErrorBlue);
+                color.a = LuaH::DataReader::GetTable<float>(L, idx, "a", ErrorAlpha, 1.f);
             }
             break;
         }
@@ -59,26 +59,26 @@ namespace Lua {
 
         switch (type) {
         case LUA_TNUMBER: {
-            rect.left = LuaH::DataReader::GetStackNumber(L, idx, ErrorLeft);
-            rect.top = LuaH::DataReader::GetStackNumber(L, idx + 1, ErrorTop);
-            rect.right = LuaH::DataReader::GetStackNumber(L, idx + 2, ErrorRight);
-            rect.bottom = LuaH::DataReader::GetStackNumber(L, idx + 3, ErrorBottom);
+            rect.left = LuaH::DataReader::GetStack<float>(L, idx, ErrorLeft);
+            rect.top = LuaH::DataReader::GetStack<float>(L, idx + 1, ErrorTop);
+            rect.right = LuaH::DataReader::GetStack<float>(L, idx + 2, ErrorRight);
+            rect.bottom = LuaH::DataReader::GetStack<float>(L, idx + 3, ErrorBottom);
             break;
         }
         case LUA_TTABLE: {
             lua_Integer len = luaL_len(L, idx);
 
             if (len >= 4) {
-                rect.left = LuaH::DataReader::GetArrayNumber(L, idx, 1, ErrorLeft);
-                rect.top = LuaH::DataReader::GetArrayNumber(L, idx, 2, ErrorTop);
-                rect.right = LuaH::DataReader::GetArrayNumber(L, idx, 3, ErrorRight);
-                rect.bottom = LuaH::DataReader::GetArrayNumber(L, idx, 4, ErrorBottom);
+                rect.left = LuaH::DataReader::GetArray<float>(L, idx, 1, ErrorLeft);
+                rect.top = LuaH::DataReader::GetArray<float>(L, idx, 2, ErrorTop);
+                rect.right = LuaH::DataReader::GetArray<float>(L, idx, 3, ErrorRight);
+                rect.bottom = LuaH::DataReader::GetArray<float>(L, idx, 4, ErrorBottom);
             }
             else {
-                rect.left = LuaH::DataReader::GetTableNumber(L, idx, "left", ErrorLeft);
-                rect.top = LuaH::DataReader::GetTableNumber(L, idx, "top", ErrorTop);
-                rect.right = LuaH::DataReader::GetTableNumber(L, idx, "right", ErrorRight);
-                rect.bottom = LuaH::DataReader::GetTableNumber(L, idx, "bottom", ErrorBottom);
+                rect.left = LuaH::DataReader::GetTable<float>(L, idx, "left", ErrorLeft);
+                rect.top = LuaH::DataReader::GetTable<float>(L, idx, "top", ErrorTop);
+                rect.right = LuaH::DataReader::GetTable<float>(L, idx, "right", ErrorRight);
+                rect.bottom = LuaH::DataReader::GetTable<float>(L, idx, "bottom", ErrorBottom);
             }
             break;
         }

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <limits>
+#include <type_traits>
+
 namespace H {
     // Math Cross Platform
     class MathCP {
@@ -134,6 +137,62 @@ namespace H {
             T end1 = start1 + length1;
 
             return Math::IntersectRange(start0, end0, start1, end1);
+        }
+
+        /*
+        Pick smallest max of integer A and B based on type byte size and signed/unsigned property
+        return type = any(A, B) // result of this function can be stored in any type without loss
+        */
+        template<class A, class B> static constexpr A MaxValue() {
+            if (sizeof(A) > sizeof(B)) {
+                // A type can hold any positive value of B
+                return (A)(std::numeric_limits<B>::max)();
+            }
+            else if (sizeof(A) < sizeof(B)) {
+                // B type can hold any positive value of A
+                return (std::numeric_limits<A>::max)();
+            }
+            else {
+                // sizeof(A) == sizeof(B)
+                bool signedA = std::is_signed<A>::value;
+                bool signedB = std::is_signed<B>::value;
+
+                if (signedA && !signedB) {
+                    return (std::numeric_limits<A>::max)(); // A type has smaller max
+                }
+                else if (!signedA && signedB) {
+                    return (A)(std::numeric_limits<B>::max)(); // B type has smaller max
+                }
+                else {
+                    // unsigned(A) && unsigned(B) || signed(A) && signed(B)
+                    return (std::numeric_limits<A>::max)(); // Return any max
+                }
+            }
+        }
+
+        /*
+        Pick greatest min of integer A and B based on type byte size and signed/unsigned property
+        return type = A // result of this function can be stored in any type without loss. Result can be cast to B.
+        */
+        template<class A, class B> static constexpr A MinValue() {
+            bool signedA = std::is_signed<A>::value;
+            bool signedB = std::is_signed<B>::value;
+
+            if (!signedA || !signedB) {
+                return (A)0;
+            }
+            else {
+                if (sizeof(A) > sizeof(B)) {
+                    // && signedA && signedB
+                    // A type can hold any negative value of B
+                    return (A)(std::numeric_limits<B>::min)();
+                }
+                else {
+                    // sizeof(A) <= sizeof(B) && signedA && signedB
+                    // B type can hold any negative value of A
+                    return (std::numeric_limits<A>::min)();
+                }
+            }
         }
     };
 }

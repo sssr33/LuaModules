@@ -43,6 +43,16 @@ printTable(graphics)
 
 do
     local renderList = graphics.RenderCmdList.New()
+
+    renderList:ClearScreen({1, 2, 3})
+
+    renderList:RenderRect(1, 2, false)
+
+    print('\nrenderList MT:')
+    -- funny bug with console output here :), looks like recursion with __index table :)
+    -- printTable(getmetatable(renderList))
+    print('\n')
+
     local renderResourceSlots = graphics.RenderResourceSlots.New()
 
     local mt1 = getmetatable(renderResourceSlots)
