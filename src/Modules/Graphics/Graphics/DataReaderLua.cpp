@@ -4,7 +4,7 @@
 #include <LuaHelpers/DataReader.h>
 
 namespace Lua {
-    Color DataReader::GetColor(lua_State *L, int idx) {
+    Color DataReader::GetColor(lua_State *L, int idx, int *readStackItems) {
         constexpr char *ErrorRed = "Color.red";
         constexpr char *ErrorGreen = "Color.green";
         constexpr char *ErrorBlue = "Color.blue";
@@ -19,7 +19,21 @@ namespace Lua {
             color.r = LuaH::DataReader::GetStack<float>(L, idx, ErrorRed);
             color.g = LuaH::DataReader::GetStack<float>(L, idx + 1, ErrorGreen);
             color.b = LuaH::DataReader::GetStack<float>(L, idx + 2, ErrorBlue);
-            color.a = LuaH::DataReader::GetStack<float>(L, idx + 3, ErrorAlpha, 1.f);
+
+            if (readStackItems) {
+                bool defaultUsed = false;
+
+                color.a = LuaH::DataReader::GetStack<float>(L, idx + 3, ErrorAlpha, 1.f, &defaultUsed);
+                *readStackItems = 4;
+
+                if (defaultUsed) {
+                    *readStackItems--;
+                }
+            }
+            else {
+                color.a = LuaH::DataReader::GetStack<float>(L, idx + 3, ErrorAlpha, 1.f);
+            }
+
             break;
         }
         case LUA_TTABLE: {
@@ -37,6 +51,10 @@ namespace Lua {
                 color.b = LuaH::DataReader::GetTable<float>(L, idx, "b", ErrorBlue);
                 color.a = LuaH::DataReader::GetTable<float>(L, idx, "a", ErrorAlpha, 1.f);
             }
+
+            if (readStackItems) {
+                *readStackItems = 1;
+            }
             break;
         }
         default:
@@ -47,7 +65,7 @@ namespace Lua {
         return color;
     }
 
-    Rect DataReader::GetRect(lua_State *L, int idx) {
+    Rect DataReader::GetRect(lua_State *L, int idx, int *readStackItems) {
         constexpr char *ErrorLeft = "Rect.left";
         constexpr char *ErrorTop = "Rect.top";
         constexpr char *ErrorRight = "Rect.right";
@@ -63,6 +81,10 @@ namespace Lua {
             rect.top = LuaH::DataReader::GetStack<float>(L, idx + 1, ErrorTop);
             rect.right = LuaH::DataReader::GetStack<float>(L, idx + 2, ErrorRight);
             rect.bottom = LuaH::DataReader::GetStack<float>(L, idx + 3, ErrorBottom);
+
+            if (readStackItems) {
+                *readStackItems = 4;
+            }
             break;
         }
         case LUA_TTABLE: {
@@ -79,6 +101,10 @@ namespace Lua {
                 rect.top = LuaH::DataReader::GetTable<float>(L, idx, "top", ErrorTop);
                 rect.right = LuaH::DataReader::GetTable<float>(L, idx, "right", ErrorRight);
                 rect.bottom = LuaH::DataReader::GetTable<float>(L, idx, "bottom", ErrorBottom);
+            }
+
+            if (readStackItems) {
+                *readStackItems = 1;
             }
             break;
         }

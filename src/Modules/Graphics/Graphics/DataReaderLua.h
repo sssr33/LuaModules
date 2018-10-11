@@ -15,7 +15,7 @@ namespace Lua {
         - table (k:v) { r : number, g : number, b : number, a : number }
         - table (k:v) { r : number, g : number, b : number } implicit a = 1.0
         */
-        static Color GetColor(lua_State *L, int idx);
+        static Color GetColor(lua_State *L, int idx, int *readStackItems = nullptr);
 
         /*
         supported formats(checked in this order):
@@ -23,6 +23,6 @@ namespace Lua {
         - array { left : number, top : number, right : number, bottom : number }
         - table (k:v) { left : number, top : number, right : number, bottom : number }
         */
-        static Rect GetRect(lua_State *L, int idx);
+        static Rect GetRect(lua_State *L, int idx, int *readStackItems = nullptr);
     };
 }

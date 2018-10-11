@@ -45,7 +45,7 @@ namespace Lua {
             return 0;
         }
 
-        // params: num rectId, num brushId, bool fill
+        // params: uint32 rectId, uint32 brushId, bool fill
         static int RenderRect(lua_State *L) {
             auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
             RenderRectCmd cmd;
@@ -58,20 +58,51 @@ namespace Lua {
             return 0;
         }
 
+        // params: Color color, uint32 brushId
         static int SetBrushColor(lua_State *L) {
             auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
             SetBrushColorCmd cmd;
+            int stackIdx = 2;
+            int readStackItems = 0;
 
+            cmd.color = DataReader::GetColor(L, stackIdx, &readStackItems);
+            stackIdx += readStackItems;
 
+            if (readStackItems == 4) {
+                bool defaultUsed = false;
+
+                // (uint32_t)0 - without this cast overload with nullptr will be used
+                cmd.brushId = LuaH::DataReader::GetStack<uint32_t>(L, stackIdx, "brushId", (uint32_t)0, &defaultUsed);
+
+                if (defaultUsed) {
+                    // take into account such arguments: r, g, b, brushId
+                    cmd.brushId = LuaH::DataReader::GetStack<uint32_t>(L, stackIdx - 1, "brushId");
+                    cmd.color.a = 1.f;
+                }
+                else {
+                    // r, g, b, a, brushId
+                    stackIdx++; // succeeded to read
+                }
+            }
+            else {
+                // {r, g, b, (a)}, brushId
+                cmd.brushId = LuaH::DataReader::GetStack<uint32_t>(L, stackIdx, "brushId");
+            }
 
             _this->Add(std::move(cmd));
             return 0;
         }
 
+        // params: Rect rect, uint32 rectId
         static int SetRect(lua_State *L) {
             auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
             SetRectCmd cmd;
+            int stackIdx = 2;
+            int readStackItems = 0;
 
+            cmd.rect = DataReader::GetRect(L, stackIdx, &readStackItems);
+            stackIdx += readStackItems;
+            cmd.rectId = LuaH::DataReader::GetStack<uint32_t>(L, stackIdx, "rectId");
 
             _this->Add(std::move(cmd));
             return 0;

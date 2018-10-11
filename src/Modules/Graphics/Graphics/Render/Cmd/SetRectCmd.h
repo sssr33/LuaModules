@@ -4,6 +4,6 @@
 #include <cstdint>
 
 struct SetRectCmd {
-    uint32_t rectId;
     Rect rect;
+    uint32_t rectId;
 };

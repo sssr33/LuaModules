@@ -15,38 +15,38 @@ namespace LuaH {
             }
         };
     public:
-        template<class T> static T GetStack(lua_State *L, int idx, const char *errorName, const float &defaultVal) {
-            return DataReader::GetStack<T>(L, idx, errorName, &defaultVal);
+        template<class T> static T GetStack(lua_State *L, int idx, const char *errorName, const T &defaultVal, bool *defaultValueUsed = nullptr) {
+            return DataReader::GetStack<T>(L, idx, errorName, &defaultVal, defaultValueUsed);
         }
 
-        template<class T> static T GetStack(lua_State *L, int idx, const char *errorName, const T *defaultVal = nullptr) {
+        template<class T> static T GetStack(lua_State *L, int idx, const char *errorName, const T *defaultVal = nullptr, bool *defaultValueUsed = nullptr) {
             auto type = lua_type(L, idx);
-            return DataReader::GetStack<T>(L, type, idx, errorName, defaultVal);
+            return DataReader::GetStack<T>(L, type, idx, errorName, defaultVal, defaultValueUsed);
         }
 
-        template<class T> static T GetArray(lua_State *L, int idx, lua_Integer i, const char *errorName, const float &defaultVal) {
-            return DataReader::GetArray<T>(L, idx, i, errorName, &defaultVal);
+        template<class T> static T GetArray(lua_State *L, int idx, lua_Integer i, const char *errorName, const T &defaultVal, bool *defaultValueUsed = nullptr) {
+            return DataReader::GetArray<T>(L, idx, i, errorName, &defaultVal, defaultValueUsed);
         }
 
-        template<class T> static T GetArray(lua_State *L, int idx, lua_Integer i, const char *errorName, const T *defaultVal = nullptr) {
+        template<class T> static T GetArray(lua_State *L, int idx, lua_Integer i, const char *errorName, const T *defaultVal = nullptr, bool *defaultValueUsed = nullptr) {
             auto type = lua_geti(L, idx, i);
-            auto val = DataReader::GetStack<T>(L, type, -1, errorName, defaultVal);
+            auto val = DataReader::GetStack<T>(L, type, -1, errorName, defaultVal, defaultValueUsed);
             lua_pop(L, 1);
             return val;
         }
 
-        template<class T> static T GetTable(lua_State *L, int idx, const char *key, const char *errorName, const float &defaultVal) {
-            return DataReader::GetTable<T>(L, idx, key, errorName, &defaultVal);
+        template<class T> static T GetTable(lua_State *L, int idx, const char *key, const char *errorName, const T &defaultVal, bool *defaultValueUsed = nullptr) {
+            return DataReader::GetTable<T>(L, idx, key, errorName, &defaultVal, defaultValueUsed);
         }
 
-        template<class T> static T GetTable(lua_State *L, int idx, const char *key, const char *errorName, const T *defaultVal = nullptr) {
+        template<class T> static T GetTable(lua_State *L, int idx, const char *key, const char *errorName, const T *defaultVal = nullptr, bool *defaultValueUsed = nullptr) {
             auto type = lua_getfield(L, idx, key);
-            auto val = DataReader::GetStack<T>(L, type, -1, errorName, defaultVal);
+            auto val = DataReader::GetStack<T>(L, type, -1, errorName, defaultVal, defaultValueUsed);
             lua_pop(L, 1);
             return val;
         }
 
-        template<class T> static T GetStack(lua_State *L, int luaType, int idx, const char *errorName, const T *defaultVal = nullptr) {
+        template<class T> static T GetStack(lua_State *L, int luaType, int idx, const char *errorName, const T *defaultVal = nullptr, bool *defaultValueUsed = nullptr) {
             T val;
 
             if (luaType == GetStackHelper<T>::GetType(L, idx)) {
@@ -54,6 +54,10 @@ namespace LuaH {
             }
             else if (defaultVal) {
                 val = *defaultVal;
+
+                if (defaultValueUsed) {
+                    *defaultValueUsed = true;
+                }
             }
             else {
                 luaL_error(L, "Failed to load %s.", errorName);

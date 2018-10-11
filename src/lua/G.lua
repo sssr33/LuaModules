@@ -48,6 +48,12 @@ do
 
     renderList:RenderRect(1, 2, false)
 
+    renderList:SetBrushColor(1, 2, 3, 4, 5)
+    renderList:SetBrushColor(1, 2, 3, 4)
+    renderList:SetBrushColor({ 1, 2, 3 }, 4)
+    renderList:SetBrushColor({ 1, 2, 3, 8 }, 4)
+    renderList:SetRect(1, 2, 3, 4, 5)
+
     print('\nrenderList MT:')
     -- funny bug with console output here :), looks like recursion with __index table :)
     -- printTable(getmetatable(renderList))
