@@ -87,6 +87,12 @@ namespace Lua {
 
             return 0;
         }
+
+        static int Render(lua_State *L) {
+            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+
+            return 0;
+        }
     };
 
     void LuaOpenRenderWindow(lua_State *L) {
@@ -99,6 +105,7 @@ namespace Lua {
             { "__index", RenderWindowLua::PropGet },
             { "__newindex", RenderWindowLua::PropSet },
             { "__gc", RenderWindowLua::Destroy },
+            { "Render", RenderWindowLua::Render },
             { nullptr, nullptr }
         };
 

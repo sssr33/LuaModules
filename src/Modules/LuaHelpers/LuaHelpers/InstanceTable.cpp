@@ -10,6 +10,16 @@ namespace LuaH {
         lua_pushvalue(L, keyIdx); // push key
         lua_rawget(L, -2); // push key value
         lua_replace(L, -2); // replace private instance table with value
+
+        if (lua_type(L, -1) == LUA_TNIL) {
+            // try metatable
+            lua_pop(L, 1); // pop nil
+            lua_getmetatable(L, userDataIdx);
+
+            lua_pushvalue(L, keyIdx); // push key
+            lua_rawget(L, -2); // push key value
+            lua_replace(L, -2); // replace metatable with value
+        }
     }
 
     void InstanceTable::PropSet(lua_State *L, int userDataIdx, int keyIdx, int valueIdx) {

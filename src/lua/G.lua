@@ -82,7 +82,9 @@ do
     print('starting window create')
     local window = graphics.RenderWindow.New('My Window')
     print('window has been created')
-    
+
+    window:Render()
+
     local renderer = window.Renderer
     print('got renderer')
     local renderer2 = window.Renderer
