@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RenderCmdListLua.h"
+#include "RenderCmdListLuaInternal.h"
 #include "DataReaderLua.h"
 #include "Render/RenderCmdList.h"
 
@@ -10,7 +11,7 @@
 
 namespace Lua {
     struct RenderCmdListLua {
-        typedef RenderCmdList CType;
+        typedef Internal::RenderCmdListLua::CType CType;
         static constexpr char *NameMt = "Graphics.RenderCmdList";
 
         static int Create(lua_State *L) {
@@ -30,7 +31,7 @@ namespace Lua {
         }
 
         static int Destroy(lua_State *L) {
-            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto _this = Internal::RenderCmdListLua::GetFromStack(L, 1);
             _this->~CType();
             return 0;
         }
@@ -47,7 +48,7 @@ namespace Lua {
 
         // params: uint32 rectId, uint32 brushId, bool fill
         static int RenderRect(lua_State *L) {
-            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto _this = Internal::RenderCmdListLua::GetFromStack(L, 1);
             RenderRectCmd cmd;
 
             cmd.rectId = LuaH::DataReader::GetStack<uint32_t>(L, 2, "rectId");
@@ -60,7 +61,7 @@ namespace Lua {
 
         // params: Color color, uint32 brushId
         static int SetBrushColor(lua_State *L) {
-            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto _this = Internal::RenderCmdListLua::GetFromStack(L, 1);
             SetBrushColorCmd cmd;
             int stackIdx = 2;
             int readStackItems = 0;
@@ -95,7 +96,7 @@ namespace Lua {
 
         // params: Rect rect, uint32 rectId
         static int SetRect(lua_State *L) {
-            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto _this = Internal::RenderCmdListLua::GetFromStack(L, 1);
             SetRectCmd cmd;
             int stackIdx = 2;
             int readStackItems = 0;
@@ -125,5 +126,12 @@ namespace Lua {
         };
 
         LuaH::Class::Register(L, funcs, metaFuncs, RenderCmdListLua::NameMt, true);
+    }
+
+    namespace Internal {
+        RenderCmdListLua::CType *RenderCmdListLua::GetFromStack(lua_State *L, int idx) {
+            auto _this = static_cast<CType*>(luaL_checkudata(L, idx, Lua::RenderCmdListLua::NameMt));
+            return _this;
+        }
     }
 }

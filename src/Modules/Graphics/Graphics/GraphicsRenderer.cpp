@@ -18,12 +18,21 @@ void GraphicsRenderer::SetResourceSlotsNoCtxLock(const RenderResourceSlots &coun
     this->rects.resize(count.rect);
 }
 
-void GraphicsRenderer::Render(RenderCmdList &renderCmd) {
+//void GraphicsRenderer::SetRenderCmdList(RenderCmdList list) {
+//    auto ctxLk = this->dxDev.LockCtxScoped();
+//    this->SetRenderCmdListNoCtxLock(std::move(list));
+//}
+//
+//void GraphicsRenderer::SetRenderCmdListNoCtxLock(RenderCmdList list) {
+//    this->renderCmd = std::move(list);
+//}
+
+void GraphicsRenderer::Render(RenderCmdList &list) {
     auto ctxLk = this->dxDev.LockCtxScoped();
-    this->RenderNoCtxLock(renderCmd);
+    this->RenderNoCtxLock(list);
 }
 
-void GraphicsRenderer::RenderNoCtxLock(RenderCmdList &renderCmd) {
+void GraphicsRenderer::RenderNoCtxLock(RenderCmdList &list) {
     auto d2d = this->dxDev.D2D();
 
     Renderer renderer;
@@ -31,7 +40,7 @@ void GraphicsRenderer::RenderNoCtxLock(RenderCmdList &renderCmd) {
 
     HRESULT hr = S_OK;
     d2d->BeginDraw();
-    renderCmd.Accept(renderer);
+    list.Accept(renderer);
     hr = d2d->EndDraw();
 }
 

@@ -1,10 +1,12 @@
 #pragma once
 #include "GraphicsRenderer.h"
+#include "RenderWindowFrame.h"
 
 #include <memory>
 #include <atomic>
 #include <thread>
 #include <string>
+#include <queue>
 #include <Windows.h>
 #include <libhelpers/Thread/critical_section.h>
 #include <libhelpers/Thread/condition_variable.h>
@@ -22,6 +24,8 @@ public:
     std::shared_ptr<GraphicsRenderer> GetRenderer() const;
     void SetRenderer(std::shared_ptr<GraphicsRenderer> v);
 
+    void Render(RenderWindowFrame frame);
+
 private:
     std::thread th;
 
@@ -30,11 +34,13 @@ private:
 
     mutable thread::critical_section renderThreadCs;
     thread::condition_variable renderThreadCv;
+    thread::condition_variable renderDoneCv;
     std::shared_ptr<GraphicsRenderer> renderer;
     bool renderThreadWork;
     bool renderThreadResize;
-    bool renderThreadRenderFrame;
     bool rendererChanged;
+    std::queue<RenderWindowFrame> renderQueue;
+    RenderWindowFrame lastFrame;
     DirectX::XMFLOAT2 renderSize;
     std::thread renderThread;
 

@@ -2,6 +2,8 @@
 #include "RenderWindowLua.h"
 #include "RenderWindow.h"
 #include "GraphicsRendererLuaInternal.h"
+#include "RenderCmdListLuaInternal.h"
+#include "RenderResourceSlotsLuaInternal.h"
 
 #include <libhelpers/UtfConvert.h>
 #include <libhelpers/fnv1.h>
@@ -90,6 +92,18 @@ namespace Lua {
 
         static int Render(lua_State *L) {
             auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto cmdList = Internal::RenderCmdListLua::GetFromStack(L, 2);
+            auto slots = Internal::RenderResourceSlotsLua::TryGetFromStack(L, 3);
+
+            RenderWindowFrame frame;
+
+            frame.cmdList = *cmdList;
+
+            if (slots) {
+                frame.SetSlots(*slots);
+            }
+
+            _this->Render(std::move(frame));
 
             return 0;
         }

@@ -17,17 +17,24 @@ public:
     void SetResourceSlots(const RenderResourceSlots &count);
     void SetResourceSlotsNoCtxLock(const RenderResourceSlots &count);
 
+    ///*
+    //Render render commands to be issued by Render method.
+    //*/
+    //void SetRenderCmdList(RenderCmdList list);
+    //void SetRenderCmdListNoCtxLock(RenderCmdList list);
+
     /*
     Performs render commands.
     */
-    void Render(RenderCmdList &renderCmd);
-    void RenderNoCtxLock(RenderCmdList &renderCmd);
+    void Render(RenderCmdList &list);
+    void RenderNoCtxLock(RenderCmdList &list);
 
 private:
     DxDevice dxDev;
 
     std::vector<D2D1_RECT_F> rects;
     std::vector<Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>> brushes;
+    //RenderCmdList renderCmd;
 
     struct Renderer {
         GraphicsRenderer *base;

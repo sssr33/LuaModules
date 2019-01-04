@@ -10,7 +10,7 @@ RenderWindow::RenderWindow(std::wstring title)
     : hwnd(nullptr)
     , renderer(std::make_shared<GraphicsRenderer>())
     , renderThreadWork(true), renderThreadResize(true)
-    , renderThreadRenderFrame(true), rendererChanged(true)
+    , rendererChanged(true)
     , renderSize(1.f, 1.f)
 {
     std::promise<void> prom;
@@ -66,6 +66,20 @@ void RenderWindow::SetRenderer(std::shared_ptr<GraphicsRenderer> v) {
         auto lk = thread::scoped_lock(this->renderThreadCs);
         this->renderer = std::move(v);
         this->rendererChanged = true;
+    }
+
+    this->renderThreadCv.notify();
+}
+
+void RenderWindow::Render(RenderWindowFrame frame) {
+    {
+        auto lk = thread::scoped_lock(this->renderThreadCs);
+
+        while (this->renderQueue.size() != 0) {
+            this->renderDoneCv.wait(this->renderThreadCs);
+        }
+
+        this->renderQueue.push(std::move(frame));
     }
 
     this->renderThreadCv.notify();
@@ -153,11 +167,13 @@ void RenderWindow::RenderThreadMain() {
         bool render = false;
         bool resetOutput = false;
         DirectX::XMFLOAT2 renderSize(1.f, 1.f);
+        RenderWindowFrame curFrame;
+        bool trySetResources = true;
 
         {
             auto lk = thread::scoped_lock(this->renderThreadCs);
 
-            while (this->renderThreadWork && !this->renderThreadResize && !this->renderThreadRenderFrame && !this->rendererChanged) {
+            while (this->renderThreadWork && !this->renderThreadResize && this->renderQueue.empty() && !this->rendererChanged) {
                 this->renderThreadCv.wait(this->renderThreadCs);
             }
 
@@ -175,14 +191,25 @@ void RenderWindow::RenderThreadMain() {
                 }
             }
 
+            bool hasCurFrame = false;
+
+            if (!this->renderQueue.empty()) {
+                curFrame = std::move(this->renderQueue.front());
+                hasCurFrame = true;
+            }
+
             if (rendererLocal) {
                 resize = this->renderThreadResize || resetOutput;
-                render = this->renderThreadRenderFrame || resetOutput;
+                render = hasCurFrame || resize;
                 renderSize = this->renderSize;
+
+                if (render && !hasCurFrame) {
+                    curFrame = std::move(this->lastFrame);
+                    this->renderQueue.push(RenderWindowFrame());
+                }
             }
 
             this->renderThreadResize = false;
-            this->renderThreadRenderFrame = false;
         }
 
         if (resetOutput) {
@@ -195,56 +222,8 @@ void RenderWindow::RenderThreadMain() {
 
             output = std::make_unique<HwndOutput>(rendererLocal->GetDxDevice(), hwnd);
 
-            RenderResourceSlots resSlots;
-
-            resSlots.colorBrush = 2;
-            resSlots.rect = 2;
-
-            rendererLocal->SetResourceSlots(resSlots);
-
-            RenderCmdList renderCmd;
-
-            {
-                SetRectCmd cmd;
-
-                cmd.rect.left = 10.f;
-                cmd.rect.top = 10.f;
-                cmd.rect.right = 100.f;
-                cmd.rect.bottom = 100.f;
-                cmd.rectId = 0;
-
-                renderCmd.Add(cmd);
-
-                cmd.rect.left = 100.f;
-                cmd.rect.top = 100.f;
-                cmd.rect.right = 200.f;
-                cmd.rect.bottom = 200.f;
-                cmd.rectId = 1;
-
-                renderCmd.Add(cmd);
-            }
-
-            {
-                SetBrushColorCmd colorBrushRes;
-
-                colorBrushRes.color.r = 1.f;
-                colorBrushRes.color.g = 0.f;
-                colorBrushRes.color.b = 0.f;
-                colorBrushRes.color.a = 1.f;
-                colorBrushRes.brushId = 0;
-
-                renderCmd.Add(colorBrushRes);
-
-                colorBrushRes.color.r = 1.f;
-                colorBrushRes.color.g = 0.5f;
-                colorBrushRes.color.b = 0.f;
-                colorBrushRes.color.a = 1.f;
-                colorBrushRes.brushId = 1;
-
-                renderCmd.Add(colorBrushRes);
-            }
-
-            rendererLocal->Render(renderCmd);
+            trySetResources = false;
+            rendererLocal->SetResourceSlots(curFrame.GetSlots());
         }
 
         if (resize) {
@@ -252,90 +231,33 @@ void RenderWindow::RenderThreadMain() {
             output->Resize();
         }
 
-        if (render)
-        {
-            auto rectId1 = 0;
-            auto rectId2 = 1;
-
-            auto brushId1 = 0;
-            auto brushId2 = 1;
-
-            RenderCmdList renderCmd;
-            {
-                renderCmd.Clear();
-
-                {
-                    ClearScreenCmd cmd;
-
-                    cmd.color = { 0.1f, 0.1f, 0.1f, 1.f };
-                    renderCmd.Add(std::move(cmd));
-                }
-
-                for (int i = 0; i < 10; i++) {
-                    {
-                        SetRectCmd cmd;
-
-                        int x1 = rand() % 1000;
-                        int x2 = rand() % 1000;
-                        int y1 = rand() % 1000;
-                        int y2 = rand() % 1000;
-
-                        cmd.rect.left = (float)(std::min)(x1, x2);
-                        cmd.rect.top = (float)(std::min)(y1, y2);
-                        cmd.rect.right = (float)(std::max)(x1, x2);
-                        cmd.rect.bottom = (float)(std::max)(y1, y2);
-                        cmd.rectId = rectId1;
-
-                        renderCmd.Add(cmd);
-                    }
-
-                    {
-                        SetBrushColorCmd cmd;
-
-                        cmd.color.r = 1.f;
-                        cmd.color.g = 0.f;
-                        cmd.color.b = (float)i / 9.f;
-                        cmd.color.a = 0.1f + 0.9f * ((float)i / 9.f);
-                        cmd.brushId = brushId1;
-
-                        renderCmd.Add(cmd);
-                    }
-
-                    {
-                        RenderRectCmd cmd;
-
-                        cmd.fill = true;
-                        cmd.brushId = brushId1;
-                        cmd.rectId = rectId1;
-                        renderCmd.Add(cmd);
-                    }
-                }
-
-                {
-                    RenderRectCmd cmd;
-
-                    cmd.fill = true;
-                    cmd.brushId = brushId1;
-                    cmd.rectId = rectId1;
-                    renderCmd.Add(cmd);
-                }
-
-                {
-                    RenderRectCmd cmd;
-
-                    cmd.fill = true;
-                    cmd.brushId = brushId2;
-                    cmd.rectId = rectId2;
-                    renderCmd.Add(cmd);
-                }
-            }
-
+        if (render) {
             {
                 auto dxLk = rendererLocal->GetDxDevice()->LockCtxScoped();
                 output->BeginRender();
-                rendererLocal->RenderNoCtxLock(renderCmd);
+
+                if (trySetResources && !curFrame.GetSlots().Empty()) {
+                    rendererLocal->SetResourceSlotsNoCtxLock(curFrame.GetSlots());
+                }
+
+                rendererLocal->RenderNoCtxLock(curFrame.cmdList);
                 output->EndRender();
             }
+
+            {
+                auto lk = thread::scoped_lock(this->renderThreadCs);
+
+                assert(!this->renderQueue.empty());
+                this->renderQueue.pop();
+
+                this->lastFrame.cmdList = std::move(curFrame.cmdList);
+
+                if (!this->lastFrame.GetSlots().Empty()) {
+                    this->lastFrame.SetSlots(this->lastFrame.DetachSlots());
+                }
+            }
+
+            this->renderDoneCv.notify_all();
         }
     }
 }
@@ -358,7 +280,6 @@ LRESULT RenderWindow::ThisWndProc(UINT msg, WPARAM wparam, LPARAM lparam, bool &
         {
             auto lk = thread::scoped_lock(this->renderThreadCs);
             this->renderThreadResize = true;
-            this->renderThreadRenderFrame = true;
             this->renderSize.x = (float)width;
             this->renderSize.y = (float)height;
         }

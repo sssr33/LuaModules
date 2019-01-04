@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GraphicsRendererLua.h"
 #include "GraphicsRendererLuaInternal.h"
+#include "RenderResourceSlotsLuaInternal.h"
+#include "RenderCmdListLuaInternal.h"
 #include "GraphicsRenderer.h"
 
 #include <memory>
@@ -10,9 +12,6 @@
 namespace Lua {
     struct GraphicsRendererLua {
         static constexpr char *NameMt = "Graphics.GraphicsRenderer";
-
-        struct Prop {
-        };
 
         static int Create(lua_State *L) {
             try {
@@ -32,25 +31,23 @@ namespace Lua {
             return 0;
         }
 
-        static int PropGet(lua_State *L) {
-            auto top = lua_gettop(L);
-            bool t = lua_istable(L, -2);
-            bool s = lua_isstring(L, -1);
+        /*static int SetResourceSlots(lua_State *L) {
+            auto _this = Internal::GraphicsRendererLua::GetFromStack(L, 1);
+            auto resSlots = Internal::RenderResourceSlotsLua::GetFromStack(L, 2);
 
-            auto tv = lua_topointer(L, -2);
-            auto sv = lua_tostring(L, -1);
-
-            luaL_getmetatable(L, NameMt);
-            auto tv2 = lua_topointer(L, -1);
-
-            bool calledWithMt = tv == tv2;
+            (*_this)->SetResourceSlots(*resSlots);
 
             return 0;
         }
 
-        static int PropSet(lua_State *L) {
+        static int SetRenderCmdList(lua_State *L) {
+            auto _this = Internal::GraphicsRendererLua::GetFromStack(L, 1);
+            auto resSlots = Internal::RenderCmdListLua::GetFromStack(L, 2);
+
+            (*_this)->SetRenderCmdList(*resSlots);
+
             return 0;
-        }
+        }*/
     };
 
     void LuaOpenGraphicsRenderer(lua_State *L) {
@@ -61,10 +58,12 @@ namespace Lua {
 
         static const luaL_Reg metaFuncs[] = {
             { "__gc", GraphicsRendererLua::Destroy },
+            /*{ "SetResourceSlots", GraphicsRendererLua::SetResourceSlots },
+            { "SetRenderCmdList", GraphicsRendererLua::SetRenderCmdList },*/
             { nullptr, nullptr }
         };
 
-        LuaH::Class::Register(L, funcs, metaFuncs, GraphicsRendererLua::NameMt);
+        LuaH::Class::Register(L, funcs, metaFuncs, GraphicsRendererLua::NameMt, true);
     }
 
     namespace Internal {
@@ -85,7 +84,7 @@ namespace Lua {
         }
 
         std::shared_ptr<GraphicsRenderer> *GraphicsRendererLua::GetFromStack(lua_State *L, int idx) {
-            auto _this = (std::shared_ptr<GraphicsRenderer>*)luaL_checkudata(L, idx, Lua::GraphicsRendererLua::NameMt);
+            auto _this = static_cast<std::shared_ptr<GraphicsRenderer>*>(luaL_checkudata(L, idx, Lua::GraphicsRendererLua::NameMt));
             return _this;
         }
     }

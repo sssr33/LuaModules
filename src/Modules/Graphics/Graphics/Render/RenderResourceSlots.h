@@ -10,4 +10,8 @@ To delete all slots just set count to 0.
 struct RenderResourceSlots {
     size_t rect;
     size_t colorBrush;
+
+    RenderResourceSlots();
+
+    bool Empty() const;
 };

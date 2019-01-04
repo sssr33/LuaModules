@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RenderResourceSlotsLua.h"
+#include "RenderResourceSlotsLuaInternal.h"
 #include "Render/RenderResourceSlots.h"
 
 #include <memory>
@@ -10,7 +11,7 @@
 
 namespace Lua {
     struct RenderResourceSlotsLua {
-        typedef RenderResourceSlots CType;
+        typedef Internal::RenderResourceSlotsLua::CType CType;
         static constexpr char *NameMt = "Graphics.RenderResourceSlots";
 
         struct Prop {
@@ -35,13 +36,13 @@ namespace Lua {
         }
 
         static int Destroy(lua_State *L) {
-            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto _this = Internal::RenderResourceSlotsLua::GetFromStack(L, 1);
             _this->~CType();
             return 0;
         }
 
         static int PropGet(lua_State *L) {
-            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto _this = Internal::RenderResourceSlotsLua::GetFromStack(L, 1);
             auto key = hash::fnv1<uint32_t>::hash(luaL_checkstring(L, 2));
 
             switch (key) {
@@ -62,7 +63,7 @@ namespace Lua {
         }
 
         static int PropSet(lua_State *L) {
-            auto _this = reinterpret_cast<CType*>(luaL_checkudata(L, 1, NameMt));
+            auto _this = Internal::RenderResourceSlotsLua::GetFromStack(L, 1);
             auto key = hash::fnv1<uint32_t>::hash(luaL_checkstring(L, 2));
 
             switch (key) {
@@ -99,5 +100,20 @@ namespace Lua {
         };
 
         LuaH::Class::Register(L, funcs, metaFuncs, RenderResourceSlotsLua::NameMt);
+    }
+
+    namespace Internal {
+        RenderResourceSlotsLua::CType *RenderResourceSlotsLua::GetFromStack(lua_State *L, int idx) {
+            auto _this = static_cast<CType*>(luaL_checkudata(L, idx, Lua::RenderResourceSlotsLua::NameMt));
+            return _this;
+        }
+
+        RenderResourceSlotsLua::CType *RenderResourceSlotsLua::TryGetFromStack(lua_State *L, int idx) {
+            if (!lua_touserdata(L, idx)) {
+                return nullptr;
+            }
+
+            return RenderResourceSlotsLua::GetFromStack(L, idx);
+        }
     }
 }

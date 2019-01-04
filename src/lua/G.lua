@@ -28,127 +28,91 @@ end
 
 printTable(graphics)
 
---do
---local renderer = graphics.GraphicsRenderer.New()
---local renderer2 = graphics.GraphicsRenderer.New()
---
---print('renderer2 table is ' .. tostring(renderer2))
---
---print('before local p = renderer.MyProp')
---print('renderer table is ' .. tostring(renderer))
---local p = renderer.MyProp
---print('after local p = renderer.MyProp')
---
---end
-
-do
-    local renderList = graphics.RenderCmdList.New()
-
-    renderList:ClearScreen({1, 2, 3})
-
-    renderList:RenderRect(1, 2, false)
-
-    renderList:SetBrushColor(1, 2, 3, 4, 5)
-    renderList:SetBrushColor(1, 2, 3, 4)
-    renderList:SetBrushColor({ 1, 2, 3 }, 4)
-    renderList:SetBrushColor({ 1, 2, 3, 8 }, 4)
-    renderList:SetRect(1, 2, 3, 4, 5)
-
-    print('\nrenderList MT:')
-    -- funny bug with console output here :), looks like recursion with __index table :)
-    -- printTable(getmetatable(renderList))
-    print('\n')
-
-    local renderResourceSlots = graphics.RenderResourceSlots.New()
-
-    local mt1 = getmetatable(renderResourceSlots)
-
-    print('\nrenderResourceSlots MT:')
-    printTable(mt1)
-    print('\n')
-
-    local rects = renderResourceSlots.Rect
-    renderResourceSlots.ColorBrush = 12
-
-    local rect2 = renderResourceSlots.Rect
-    renderResourceSlots.Rect = 22
-
-    --renderResourceSlots.asdasd = 'asd'
-end
-
-collectgarbage('collect')
-
-do
-    print('starting window create')
+local TestScene1 = function()
     local window = graphics.RenderWindow.New('My Window')
-    print('window has been created')
+    local resourceSlots = graphics.RenderResourceSlots.New()
 
-    window:Render()
+    resourceSlots.ColorBrush = 1
+    resourceSlots.Rect = 2
 
-    local renderer = window.Renderer
-    print('got renderer')
-    local renderer2 = window.Renderer
-    print('got renderer2')
-    print('renderer == renderer2 : ' .. tostring(renderer == renderer2))
-    
-    local renderer23 = window.UnknownKey
-    print('UnknownKey is ' .. tostring(renderer23))
-    
-    sleep(2)
-    
-    window.Renderer = nil
-    
-    if window.Renderer == nil then
-        print('window.Renderer == nil')
-    else
-        print('window.Renderer is not nil')
+    local r = 0.0
+    local x = 0.0
+    local frame = 0
+
+    while frame < 400 do
+        local renderList = graphics.RenderCmdList.New()
+
+        renderList:ClearScreen({r, 1, 0})
+
+        renderList:SetBrushColor({ 1, 0, 0 }, 0)
+        renderList:SetRect(x + 10, 10, x + 100, 100, 0)
+        renderList:SetRect(100, 100, 200, 200, 1)
+
+        renderList:RenderRect(0, 0, true)
+        renderList:RenderRect(1, 0, false)
+
+        window:Render(renderList, resourceSlots)
+
+        r = r + 0.01
+        x = x + 0.1
+        frame = frame + 1
+
+        if r > 1.0 then
+            r = 0.0
+        end
+
+        if x > 10.0 then
+            x = 0.0
+        end
     end
-    
-    sleep(2)
-    
-    window.Renderer = renderer
-    
-    local renderer2 = window.Renderer23
-
 end
 
---io.read(1)
+local TestScene2 = function()
+    local window = graphics.RenderWindow.New('My Window')
+    local resourceSlots = graphics.RenderResourceSlots.New()
+
+    resourceSlots.ColorBrush = 1
+    resourceSlots.Rect = 1
+
+    local frame = 0
+
+    while frame < 400 do
+        local renderList = graphics.RenderCmdList.New()
+
+        renderList:ClearScreen(0.1, 0.1, 0.1)
+
+        for i = 1, 10 do
+            local x1 = math.random(1000)
+            local x2 = math.random(1000)
+            local y1 = math.random(1000)
+            local y2 = math.random(1000)
+
+            local left = math.min(x1, x2)
+            local top = math.min(y1, y2)
+            local right = math.max(x1, x2)
+            local bottom = math.max(y1, y2)
+
+            renderList:SetRect(left, top, right, bottom, 0)
+
+            local r = 1.0
+            local g = 0.0
+            local b = i / 10.0
+            local a = 0.1 + 0.9 * (i / 10.0)
+
+            renderList:SetBrushColor(r, g, b, a, 0)
+
+            renderList:RenderRect(0, 0, true)
+        end
+
+        window:Render(renderList, resourceSlots)
+
+        frame = frame + 1
+    end
+end
+
+--TestScene1()
+TestScene2()
 --collectgarbage('collect')
-
-for k,v in pairs(_G) do
-    --print(k .. ' = ' .. tostring(v))
-end
-
---mt1 = {}
---
---mt1.__index = mt1
---mt1.__newindex = function(t, k, v)
---    print('mt1.__newindex: ' .. tostring(k) .. ' = ' .. tostring(v))
---    print('mt1.new mt1==t ' .. tostring(t == mt1))
---    rawset(t, k, v)
---end
---
---function mt1:new(o)
---    o = o or {}
---    setmetatable(o, self)
---    --print('mt1.new mt1==self ' .. tostring(self == mt1))
---    return o
---end
---
---mt2 = mt1:new()
---
---function mt2:mt2Test()
---end
---
---o1 = mt1:new()
---
---o1.zzz = 23
---o1.zzz = 45
---
---o2 = mt2:new()
---
---o2.zzz = 23
---o2.zzz = 26
 
 print('program end')
 
