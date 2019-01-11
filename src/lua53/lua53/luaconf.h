@@ -282,7 +282,7 @@
     defined(__ELF__)		/* { */
 #define LUAI_FUNC	__attribute__((visibility("hidden"))) extern
 #else				/* }{ */
-#define LUAI_FUNC	LUA_API //extern
+#define LUAI_FUNC	LUA_API //extern // do not use extern to share lua.dll between lua.exe and luac.exe(it uses private api). If luac is not needed and size of dll need to be reduced a bit then extern must be used
 #endif				/* } */
 
 #define LUAI_DDEC	LUAI_FUNC
